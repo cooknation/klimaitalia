@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooknation.ai — Trade Catalogue</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN SYSTEM — Claude-grey dark, Google label colors
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Backgrounds — Claude-style dark greys */
+  --bg:         #212121;
+  --surface:    #2f2f2f;
+  --surface-2:  #373737;
+  --surface-3:  #424242;
+  --nav-bg:     rgba(33,33,33,0.92);
+
+  /* Borders */
+  --border:     rgba(255,255,255,0.10);
+  --border-mid: rgba(255,255,255,0.14);
+
+  /* Text — white hierarchy */
+  --tx-1: #ffffff;
+  --tx-2: #e0e0e0;
+  --tx-3: #aaaaaa;
+
+  /* Google label colors */
+  --g-blue:   #4285F4;
+  --g-red:    #EA4335;
+  --g-yellow: #FBBC04;
+  --g-green:  #34A853;
+
+  /* Semantic */
+  --accent:      var(--g-blue);
+  --accent-dim:  rgba(66,133,244,0.15);
+  --danger:      var(--g-red);
+  --success:     var(--g-green);
+  --warn:        var(--g-yellow);
+
+  /* Tier colors */
+  --t1: #767676;
+  --t2: var(--g-blue);
+  --t3: var(--g-green);
+
+  /* Shapes */
+  --r-sm: 6px;
+  --r:    10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4,0,0.2,1);
+  --tr:   all 0.18s var(--ease);
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--tx-1);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+  height: auto;
+  padding: 8px 0;
+}
+.nav-inner {
+  max-width: 1440px; margin: 0 auto; padding: 0 24px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 8px 24px;
+}
+.brand {
+  font-size: 1rem; font-weight: 700; letter-spacing: -0.3px;
+  color: var(--tx-1); text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.brand-icon {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--g-blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 800; color: #fff;
+}
+.brand-sub { color: var(--tx-3); font-weight: 400; font-size: 0.78rem; margin-left: 2px; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+/* ── Buttons ── */
+.btn {
+  font-family: inherit; font-size: 0.8rem; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  padding: 7px 16px; transition: var(--tr);
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap; line-height: 1;
+}
+.btn-blue   { background: var(--g-blue);   color: #fff; }
+.btn-blue:hover { background: #5a95f5; }
+.btn-ghost  { background: var(--surface-2); color: var(--tx-2); border: 1px solid var(--border-mid); }
+.btn-ghost:hover { background: var(--surface-3); color: var(--tx-1); }
+.btn-red    { background: rgba(234,67,53,0.15); color: var(--g-red); border: 1px solid rgba(234,67,53,0.25); }
+.btn-red:hover { background: rgba(234,67,53,0.25); }
+.btn-green  { background: #34A853; color: #fff; border: none; }
+.btn-green:hover { background: #2d9248; }
+
+/* CALCULATE button removed — real-time updates via oninput */
+.btn-sm { padding: 5px 12px; font-size: 0.75rem; }
+.btn-xs { padding: 3px 9px; font-size: 0.72rem; }
+
+/* ══════════════════════════════════════════
+   TOP STRIP: Import + Discount
+══════════════════════════════════════════ */
+.top-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.strip-inner {
+  max-width: 1440px; margin: 0 auto; padding: 10px 24px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+
+/* CSV Sources panel */
+.csv-sources {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.csv-source-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 3px 10px 3px 8px;
+  font-size: 0.72rem; color: var(--tx-2);
+}
+.csv-source-tag .src-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--g-green); flex-shrink: 0; }
+.csv-source-tag .src-rm { background: none; border: none; cursor: pointer; color: var(--tx-3); font-size: 0.85rem; padding: 0 0 0 2px; line-height: 1; display: flex; align-items: center; }
+.csv-source-tag .src-rm:hover { color: var(--g-red); }
+input[type="file"] { display: none; }
+
+.strip-sep { display: none; }
+
+/* Discount row (legacy, kept for safety) */
+.disc-row { display: flex; flex-direction: column; gap: 7px; }
+.disc-group { display: flex; align-items: center; gap: 6px; }
+
+/* Discount matrix grid */
+.disc-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.dm-header, .dm-row {
+  display: grid;
+  grid-template-columns: 58px 110px 50px 50px 50px 50px;
+  align-items: center;
+  gap: 6px;
+}
+.dm-cell { display: flex; align-items: center; gap: 3px; }
+.dm-col-hd {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  justify-content: center;
+}
+.dm-label-col { justify-content: flex-start; }
+.dm-qty-col   { justify-content: flex-start; gap: 3px; }
+.dm-disc-col  { justify-content: center; }
+/* override disc-val to fit grid */
+.disc-matrix .disc-val {
+  width: 100%; min-width: 0; padding: 3px 4px; font-size: 0.82rem;
+}
+.disc-chip {
+  font-size: 0.68rem; font-weight: 800; padding: 3px 8px;
+  border-radius: 5px; flex-shrink: 0; min-width: 46px; text-align: center;
+}
+/* f) tier colors */
+.dc1 { background: rgba(255,220,0,0.18);  color: #FFD600; }
+.dc2 { background: rgba(255,140,0,0.18);  color: #FF8C00; }
+.dc3 { background: rgba(220,50,50,0.18);  color: #E53935; }
+
+.disc-lbl { font-size: 0.72rem; color: #ffffff; white-space: nowrap; font-weight: 500; }
+.disc-val {
+  background: var(--surface-3); border: 1px solid var(--border-mid);
+  border-radius: 5px; font-family: inherit; font-size: 0.85rem; font-weight: 600;
+  color: #fff; padding: 3px 6px; width: 48px; text-align: center;
+}
+.disc-val:focus { outline: none; border-color: var(--g-blue); }
+.qty-val {
+  background: var(--surface-3); border: 1px solid var(--border-mid);
+  border-radius: 5px; font-family: inherit; font-size: 0.78rem;
+  color: #fff; padding: 3px 6px; width: 44px; text-align: center;
+}
+.qty-val:focus { outline: none; border-color: var(--g-blue); }
+
+/* ══════════════════════════════════════════
+   LAYOUT: Sidebar + Main
+══════════════════════════════════════════ */
+.layout {
+  max-width: 1440px; margin: 0 auto;
+  display: grid; grid-template-columns: 220px 1fr;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 0;
+  height: 100vh;
+  overflow-y: auto; padding: 16px 0 40px;
+}
+.sidebar-head {
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--tx-3); padding: 0 16px 10px;
+}
+.cat-tree { list-style: none; }
+.cat-btn {
+  width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 0.82rem; font-weight: 400; color: var(--tx-2);
+  padding: 6px 16px; display: flex; align-items: center; gap: 7px; transition: var(--tr);
+  line-height: 1.3; border-left: 2px solid transparent;
+}
+.cat-btn:hover { background: var(--surface-2); color: var(--tx-1); }
+.cat-btn.active { color: var(--g-blue); border-left-color: var(--g-blue); background: rgba(66,133,244,0.08); font-weight: 600; }
+.cat-count {
+  margin-left: auto; font-size: 0.65rem;
+  background: var(--surface-3); color: var(--tx-3);
+  border-radius: 20px; padding: 1px 6px; flex-shrink: 0;
+}
+.cat-btn.active .cat-count { background: var(--g-blue); color: #fff; }
+.chev { width: 11px; height: 11px; flex-shrink: 0; transition: transform 0.2s; opacity: 0.45; }
+.cat-btn[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.cat-children { list-style: none; overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
+.cat-children.open { max-height: 3000px; }
+.cat-children .cat-btn { padding-left: 28px; font-size: 0.78rem; }
+.cat-children .cat-children .cat-btn { padding-left: 40px; font-size: 0.76rem; }
+
+/* ── Main ── */
+.main { padding: 18px 22px 80px; min-height: calc(100vh - 54px); }
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; flex-wrap: wrap;
+}
+.search-wrap { position: relative; flex: 1; min-width: 180px; }
+.search-ico {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--tx-3); pointer-events: none;
+}
+.search-input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border-mid);
+  border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: var(--tx-1);
+  padding: 8px 14px 8px 32px; transition: var(--tr);
+}
+.search-input::placeholder { color: var(--tx-3); }
+.search-input:focus { outline: none; border-color: var(--g-blue); background: var(--surface-2); }
+.sort-sel {
+  background: var(--surface); border: 1px solid var(--border-mid);
+  border-radius: 8px; font-family: inherit; font-size: 0.8rem; color: var(--tx-1);
+  padding: 8px 28px 8px 12px; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23767676' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 9px center;
+}
+.sort-sel:focus { outline: none; border-color: var(--g-blue); }
+.res-count { font-size: 0.75rem; color: var(--tx-3); white-space: nowrap; }
+
+/* ══════════════════════════════════════════
+   PRODUCT CARDS
+══════════════════════════════════════════ */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow 0.22s, transform 0.18s, border-color 0.18s;
+}
+.product-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  transform: translateY(-2px);
+  border-color: var(--border-mid);
+}
+
+/* ── Card image ── */
+.card-img-wrap {
+  position: relative;
+  height: 260px;
+  background: #ffffff;   /* ← white placeholder */
+  overflow: hidden; flex-shrink: 0;
+}
+.card-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain; padding: 16px;
+  transition: transform 0.35s var(--ease);
+  display: block;
+}
+.product-card:hover .card-img-wrap img { transform: scale(1.04); }
+.card-img-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: #ffffff;
+  color: #ccc; font-size: 2.8rem;
+}
+
+.img-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 10px;
+  pointer-events: none;
+}
+.img-overlay > * { pointer-events: auto; }
+
+/* Compare checkbox */
+.cmp-chk-btn {
+  width: 26px; height: 26px;
+  background: rgba(33,33,33,0.75); border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 7px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tx-3); font-size: 0.7rem; font-weight: 800;
+  transition: var(--tr); opacity: 0.4;
+  position: relative; z-index: 10;
+  font-family: inherit;
+}
+.product-card:hover .cmp-chk-btn { opacity: 1; }
+.cmp-chk-btn.on { background: var(--g-blue); border-color: var(--g-blue); color: #fff; opacity: 1; }
+.cmp-chk-btn:hover { background: var(--surface-3); color: var(--tx-1); }
+
+/* Zoom btn */
+.zoom-btn {
+  width: 28px; height: 28px;
+  background: rgba(33,33,33,0.75); border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 7px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #ccc; opacity: 0; transition: var(--tr);
+}
+.product-card:hover .zoom-btn { opacity: 1; }
+.zoom-btn:hover { background: rgba(66,133,244,0.8); color: #fff; }
+
+/* ── Card compare bar ── */
+.card-cmp-bar {
+  padding: 6px 12px 0;
+  display: flex; justify-content: flex-start;
+}
+.card-cmp-toggle {
+  font-family: inherit; font-size: 0.68rem; font-weight: 600;
+  background: none; border: 1px solid var(--border-mid);
+  border-radius: 6px; padding: 4px 10px;
+  color: var(--tx-3); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: var(--tr);
+}
+.card-cmp-toggle:hover { color: var(--g-blue); border-color: var(--g-blue); background: var(--accent-dim); }
+.card-cmp-toggle.cmp-active { color: var(--g-blue); border-color: var(--g-blue); background: var(--accent-dim); }
+
+/* ── Card body ── */
+.card-body { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.card-sku { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.9px; text-transform: uppercase; color: var(--tx-3); }
+.card-name { font-size: 0.9rem; font-weight: 600; color: var(--tx-1); line-height: 1.35; }
+.card-short { font-size: 0.76rem; color: var(--tx-2); line-height: 1.5; flex: 1; }
+.card-dims { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+.dim-pill {
+  font-size: 0.62rem; font-weight: 500;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 6px; color: var(--tx-3);
+}
+
+/* ── Card prices ── */
+.card-prices {
+  border-top: 1px solid var(--border);
+  padding: 11px 16px; background: var(--surface-2);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.p-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.p-lbl {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; font-weight: 500; color: var(--tx-3);
+}
+.p-chip {
+  width: 18px; height: 18px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.52rem; font-weight: 900; flex-shrink: 0;
+}
+.c1 { background: rgba(118,118,118,0.2); color: #999; }
+.c2 { background: rgba(66,133,244,0.2);  color: var(--g-blue); }
+.c3 { background: rgba(52,168,83,0.2);   color: var(--g-green); }
+
+.p-vals { text-align: right; }
+.p-was { font-size: 0.65rem; text-decoration: line-through; color: var(--tx-3); }
+.p-net { font-size: 0.96rem; font-weight: 700; color: #fff; }
+.p-net.col2 { color: #FF8C00; }
+.p-net.col3 { color: #E53935; }
+.p-save { font-size: 0.62rem; color: var(--g-green); font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   COMPARE BAR (bottom fixed)
+══════════════════════════════════════════ */
+.cmp-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: var(--surface);
+  border-top: 2px solid var(--g-blue);
+  padding: 10px 24px;
+  display: none; align-items: center; gap: 14px;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+}
+.cmp-bar.on { display: flex; }
+.cmp-bar-label { font-size: 0.72rem; font-weight: 700; color: var(--g-blue); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.8px; }
+.cmp-thumbs { display: flex; gap: 10px; flex: 1; flex-wrap: wrap; align-items: center; }
+.cmp-thumb-item {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface-2); border: 1px solid var(--border-mid);
+  border-radius: 8px; padding: 5px 10px 5px 7px;
+  font-size: 0.75rem; color: var(--tx-2); max-width: 200px;
+}
+.cmp-thumb-img {
+  width: 28px; height: 28px; object-fit: contain; border-radius: 4px;
+  background: #fff; flex-shrink: 0;
+}
+.cmp-thumb-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.72rem; }
+.cmp-rm { background: none; border: none; color: var(--tx-3); cursor: pointer; font-size: 0.9rem; line-height: 1; flex-shrink: 0; padding: 0; }
+.cmp-rm:hover { color: var(--g-red); }
+.cmp-hint { font-size: 0.72rem; color: var(--tx-3); }
+
+/* ══════════════════════════════════════════
+   PRODUCT DETAIL MODAL
+══════════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.overlay.on { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-mid);
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  width: 100%; max-width: 960px; max-height: 92vh;
+  overflow: hidden; display: flex; flex-direction: column;
+  animation: popIn 0.22s var(--ease) both;
+}
+@keyframes popIn { from { opacity:0; transform:scale(0.96) translateY(12px); } to { opacity:1; transform:none; } }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px 0;
+  flex-shrink: 0;
+}
+.modal-header-info { display: flex; flex-direction: column; gap: 2px; }
+.modal-brand-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--tx-3); }
+.modal-title { font-size: 1.1rem; font-weight: 700; color: var(--tx-1); line-height: 1.3; }
+.modal-sku-tag { font-size: 0.7rem; color: var(--tx-3); }
+.modal-close-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  background: var(--surface-2); color: var(--tx-2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0; transition: var(--tr);
+}
+.modal-close-btn:hover { background: var(--surface-3); color: var(--tx-1); }
+
+.modal-body {
+  display: grid; grid-template-columns: 380px 1fr;
+  overflow: hidden; flex: 1; min-height: 0;
+}
+
+/* Gallery */
+.modal-gallery {
+  background: #ffffff;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+.gallery-stage {
+  flex: 1; position: relative; cursor: zoom-in; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 260px;
+}
+.gallery-stage img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; padding: 20px;
+  transition: transform 0.3s var(--ease);
+  transform-origin: center;
+}
+.gallery-stage.zoomed { cursor: zoom-out; }
+.gallery-stage.zoomed img { transform: scale(2.2); }
+.gallery-stage-btn {
+  position: absolute; bottom: 10px; right: 10px;
+  background: rgba(0,0,0,0.25); border: none; border-radius: 7px;
+  width: 30px; height: 30px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #555; transition: var(--tr);
+}
+.gallery-stage-btn:hover { background: rgba(0,0,0,0.5); color: #222; }
+.gallery-thumbs {
+  display: flex; gap: 6px; padding: 8px 10px; overflow-x: auto;
+  border-top: 1px solid #e0e0e0; background: #fafafa; flex-shrink: 0;
+}
+.g-thumb {
+  width: 46px; height: 46px; flex-shrink: 0;
+  background: #fff; border: 2px solid #e0e0e0;
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  transition: border-color 0.15s;
+}
+.g-thumb.on { border-color: var(--g-blue); }
+.g-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+
+/* Modal info panel */
+.modal-info {
+  display: flex; flex-direction: column;
+  overflow-y: auto; min-height: 0;
+}
+.modal-short-desc {
+  font-size: 0.8rem; color: var(--tx-2); line-height: 1.6;
+  padding: 12px 20px 0; border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+/* Tabs */
+.tabs-strip {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px; flex-shrink: 0;
+}
+.tab-btn {
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  font-size: 0.77rem; font-weight: 500; color: var(--tx-3);
+  padding: 10px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: var(--tr); white-space: nowrap;
+}
+.tab-btn:hover { color: var(--tx-1); }
+.tab-btn.on { color: var(--g-blue); border-bottom-color: var(--g-blue); font-weight: 600; }
+
+.tab-panel { display: none; padding: 14px 20px; overflow-y: auto; }
+.tab-panel.on { display: block; }
+
+/* Spec table */
+.spec-table { width: 100%; border-collapse: collapse; }
+.spec-table tr { border-bottom: 1px solid var(--border); }
+.spec-table tr:last-child { border-bottom: none; }
+.spec-table td { padding: 7px 0; font-size: 0.78rem; vertical-align: top; }
+.spec-table td:first-child { color: var(--tx-3); width: 42%; padding-right: 10px; font-weight: 500; }
+.spec-table td:last-child { color: var(--tx-1); }
+
+.desc-body { font-size: 0.8rem; color: var(--tx-2); line-height: 1.7; }
+
+/* Documents */
+.doc-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 13px;
+  text-decoration: none; color: var(--tx-1); font-size: 0.78rem; font-weight: 500;
+  margin-bottom: 7px; transition: var(--tr);
+}
+.doc-item:hover { border-color: var(--g-blue); background: var(--accent-dim); color: var(--g-blue); }
+.doc-item svg { flex-shrink: 0; opacity: 0.7; }
+.doc-ext-ico { margin-left: auto; opacity: 0.35; }
+
+/* Modal prices */
+.modal-prices { padding: 14px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.modal-prices-title { font-size: 0.63rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--tx-3); margin-bottom: 8px; }
+.mp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px; border-radius: 8px; background: var(--surface-2);
+  margin-bottom: 6px;
+}
+.mp-lbl { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--tx-2); }
+.mp-net { font-size: 0.98rem; font-weight: 700; }
+
+/* ══════════════════════════════════════════
+   COMPARE MODAL
+══════════════════════════════════════════ */
+.cmp-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 32px 16px; overflow-y: auto;
+}
+.cmp-overlay.on { display: flex; }
+.cmp-modal {
+  background: var(--surface); border: 1px solid var(--border-mid);
+  border-radius: 18px; box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+  width: 100%; max-width: 1100px; padding: 24px;
+  position: relative; animation: popIn 0.2s var(--ease) both;
+}
+.cmp-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.cmp-modal-title { font-size: 1rem; font-weight: 700; color: var(--tx-1); }
+.cmp-scroll-wrap { overflow-x: auto; }
+.cmp-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+.cmp-table th {
+  background: var(--surface-2); padding: 10px 14px; font-size: 0.75rem;
+  font-weight: 600; text-align: center; border: 1px solid var(--border);
+  color: var(--tx-2); position: sticky; top: 0;
+}
+.cmp-table td {
+  padding: 8px 12px; font-size: 0.78rem; border: 1px solid var(--border);
+  text-align: center; vertical-align: middle; color: var(--tx-1);
+}
+.cmp-table td:first-child {
+  text-align: left; font-size: 0.73rem; font-weight: 600;
+  color: var(--tx-3); background: var(--surface-2); white-space: nowrap;
+}
+.cmp-img-cell img { width: 64px; height: 64px; object-fit: contain; background: #fff; border-radius: 6px; }
+.cmp-diff { background: rgba(251,188,4,0.08); }
+.cmp-t1 { color: var(--tx-1); font-weight: 700; }
+.cmp-t2 { color: var(--g-blue); font-weight: 700; }
+.cmp-t3 { color: var(--g-green); font-weight: 700; }
+
+/* ── LIGHTBOX ── */
+.lb-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,0.93);
+  display: none; align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.lb-overlay.on { display: flex; }
+.lb-overlay img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 6px; }
+.lb-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,0.1); border: none; border-radius: 50%;
+  width: 36px; height: 36px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.2rem;
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  grid-column: 1/-1; text-align: center;
+  padding: 80px 20px; color: var(--tx-3);
+}
+.empty-state p { font-size: 0.85rem; margin-top: 8px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+  .modal-body{grid-template-columns:1fr;}
+  .modal-gallery{border-right:none;border-bottom:1px solid var(--border);max-height:260px;}
+}
+@media(max-width:580px){
+  .strip-inner{padding:8px 14px;}
+  .main{padding:14px 14px 80px;}
+  .products-grid{grid-template-columns:1fr;}
+  .cmp-bar{padding:8px 14px;}
+}
+
+/* ══════════════════════════════════════════
+   FAVOURITES & BASKET
+══════════════════════════════════════════ */
+
+/* Card action bar (cmp + fav + basket) */
+.card-actions {
+  display: flex; gap: 5px; padding: 6px 10px 0;
+  flex-wrap: wrap;
+}
+.card-action-btn {
+  font-family: inherit; font-size: 0.68rem; font-weight: 600;
+  background: none; border: 1px solid var(--border-mid);
+  border-radius: 6px; padding: 4px 9px;
+  color: var(--tx-3); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: var(--tr); flex: 1; justify-content: center;
+  white-space: nowrap;
+}
+.card-action-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); background: var(--surface-3); }
+.card-action-btn.fav-active  { color: #FFD600; border-color: #FFD600; background: rgba(255,214,0,0.08); }
+.card-action-btn.bsk-active  { color: #34A853; border-color: #34A853; background: rgba(52,168,83,0.08); }
+
+/* Floating action bar (bottom, replaces/extends compare bar) */
+.fab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: var(--surface);
+  border-top: 2px solid var(--border-mid);
+  padding: 8px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  box-shadow: 0 -6px 32px rgba(0,0,0,0.5);
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.fab-bar.on { transform: translateY(0); }
+.fab-section {
+  display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
+}
+.fab-label {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
+  text-transform: uppercase; white-space: nowrap;
+}
+.fab-label.lbl-fav  { color: #FFD600; }
+.fab-label.lbl-bsk  { color: #34A853; }
+.fab-label.lbl-cmp  { color: var(--g-blue); }
+.fab-chips { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; align-items: center; overflow: hidden; }
+.fab-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--surface-2); border: 1px solid var(--border-mid);
+  border-radius: 6px; padding: 3px 8px;
+  font-size: 0.7rem; color: var(--tx-2); max-width: 160px;
+}
+.fab-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fab-chip-rm {
+  background: none; border: none; cursor: pointer; color: var(--tx-3);
+  font-size: 0.85rem; padding: 0; line-height: 1; flex-shrink: 0;
+  transition: color 0.15s;
+}
+.fab-chip-rm:hover { color: var(--g-red); }
+.fab-divider { width: 1px; height: 32px; background: var(--border-mid); flex-shrink: 0; }
+.fab-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* ── Basket qty badge on card ── */
+.bsk-qty-badge {
+  position: absolute; top: 6px; right: 6px;
+  background: #34A853; color: #fff;
+  font-size: 0.6rem; font-weight: 800;
+  border-radius: 10px; padding: 1px 6px;
+  pointer-events: none; display: none;
+}
+.bsk-qty-badge.on { display: block; }
+
+/* ══════════════════════════════════════════
+   BASKET MODAL
+══════════════════════════════════════════ */
+.bsk-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 24px 16px; overflow-y: auto;
+}
+.bsk-overlay.on { display: flex; }
+.bsk-modal {
+  background: var(--surface); border: 1px solid var(--border-mid);
+  border-radius: 18px; box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+  width: 100%; max-width: 860px;
+  display: flex; flex-direction: column;
+  animation: popIn 0.22s var(--ease) both;
+}
+.bsk-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.bsk-title { font-size: 1rem; font-weight: 700; color: var(--tx-1); }
+.bsk-body { padding: 16px 22px; overflow-y: auto; max-height: 55vh; }
+.bsk-table { width: 100%; border-collapse: collapse; }
+.bsk-table th {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--tx-3);
+  padding: 6px 8px; border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.bsk-table th:last-child, .bsk-table td:last-child { text-align: right; }
+.bsk-table td {
+  padding: 10px 8px; border-bottom: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--tx-1); vertical-align: middle;
+}
+.bsk-table td:nth-child(3) { text-align: center; }
+.bsk-img { width: 40px; height: 40px; object-fit: contain; background: #fff; border-radius: 5px; }
+.bsk-name { font-weight: 600; font-size: 0.82rem; }
+.bsk-sku  { font-size: 0.68rem; color: var(--tx-3); }
+.bsk-qty-ctrl {
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.bsk-qty-btn {
+  width: 24px; height: 24px; border-radius: 5px;
+  background: var(--surface-3); border: 1px solid var(--border-mid);
+  color: var(--tx-1); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; transition: var(--tr); line-height: 1;
+}
+.bsk-qty-btn:hover { background: var(--g-blue); border-color: var(--g-blue); }
+.bsk-qty-num {
+  width: 36px; text-align: center;
+  background: var(--surface-2); border: 1px solid var(--border-mid);
+  border-radius: 5px; font-family: inherit; font-size: 0.85rem;
+  font-weight: 700; color: #fff; padding: 2px 4px;
+}
+.bsk-tier-tag {
+  display: inline-block; font-size: 0.6rem; font-weight: 800;
+  padding: 1px 5px; border-radius: 4px; margin-left: 4px;
+}
+.bsk-tier1 { background: rgba(255,214,0,0.15); color: #FFD600; }
+.bsk-tier2 { background: rgba(255,140,0,0.15); color: #FF8C00; }
+.bsk-tier3 { background: rgba(229,57,53,0.15);  color: #E53935; }
+.bsk-total-row td { font-weight: 700; color: #fff; border-top: 2px solid var(--border-mid); border-bottom: none; font-size: 0.88rem; padding-top: 14px; }
+.bsk-footer {
+  padding: 14px 22px 18px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.bsk-footer-note {
+  font-size: 0.72rem; color: var(--tx-3); flex: 1;
+}
+
+/* ══════════════════════════════════════════
+   FAV MODAL (lista semplice)
+══════════════════════════════════════════ */
+.fav-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 24px 16px; overflow-y: auto;
+}
+.fav-overlay.on { display: flex; }
+.fav-modal {
+  background: var(--surface); border: 1px solid var(--border-mid);
+  border-radius: 18px; box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+  width: 100%; max-width: 780px;
+  animation: popIn 0.22s var(--ease) both;
+}
+.fav-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+}
+.fav-title { font-size: 1rem; font-weight: 700; color: var(--tx-1); }
+.fav-body { padding: 14px 22px; max-height: 55vh; overflow-y: auto; }
+.fav-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
+}
+.fav-card {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px;
+  cursor: pointer; transition: var(--tr);
+}
+.fav-card:hover { border-color: var(--border-mid); background: var(--surface-3); }
+.fav-card img { width: 100%; height: 80px; object-fit: contain; background: #fff; border-radius: 6px; }
+.fav-card-name { font-size: 0.78rem; font-weight: 600; color: var(--tx-1); line-height: 1.3; }
+.fav-card-sku  { font-size: 0.65rem; color: var(--tx-3); }
+.fav-card-price { font-size: 0.82rem; font-weight: 700; color: #fff; }
+.fav-card-actions { display: flex; gap: 5px; margin-top: 2px; }
+.fav-footer {
+  padding: 12px 22px 16px; border-top: 1px solid var(--border);
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════ */
+@media print {
+  nav, .top-strip, .sidebar, .toolbar, .fab-bar,
+  .cmp-bar, .bsk-overlay, .fav-overlay, .lb-overlay,
+  .card-actions, .card-cmp-bar, .zoom-btn { display: none !important; }
+  .layout { grid-template-columns: 1fr !important; }
+  .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .product-card { border: 1px solid #ddd !important; background: #fff !important; break-inside: avoid; }
+  .card-img-wrap { background: #fff !important; height: 140px !important; }
+  .card-name, .card-sku { color: #000 !important; }
+  .card-prices { background: #f5f5f5 !important; }
+  .p-net { color: #000 !important; }
+  /* Print only basket modal contents */
+  .print-bsk-only { display: block !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    <!-- Riga 1: titolo + pulsante compare -->
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.12);">
+      <a href="https://www.cooknation.ai" target="_blank" rel="noopener" style="font-size:1.15rem;letter-spacing:2.5px;font-weight:900;text-transform:uppercase;color:#fff;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
+        COOKNATION.ai
+      </a>
+      <!-- Compare button: nascosto finché non si selezionano prodotti -->
+      <button class="btn btn-blue btn-sm" id="navCmpBtn" style="display:none" onclick="openCmpModal()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="18" rx="1.5"/></svg>
+        Compare <span id="navCmpCount">0</span>
+      </button>
+    </div>
+    <!-- Riga 2: email contatti -->
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <span style="font-size:0.62rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-right:6px;">Contact:</span>
+      <a href="mailto:enrico@cooknation.ee" style="color:#FFD600;font-size:0.72rem;font-weight:500;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">enrico@cooknation.ee</a>
+      <span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">·</span>
+      <a href="mailto:kristiine@cooknation.ee" style="color:#FF8C00;font-size:0.72rem;font-weight:500;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">kristiine@cooknation.ee</a>
+      <span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">·</span>
+      <a href="mailto:elisa@cooknation.ee" style="color:#34A853;font-size:0.72rem;font-weight:500;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">elisa@cooknation.ee</a>
+    </div>
+    <!-- Riga 3: brand label + docs link -->
+    <div style="margin-top:2px;padding-top:5px;border-top:1px solid rgba(255,255,255,0.08);width:100%;display:flex;align-items:center;gap:14px;">
+      <div>
+        <span style="font-size:0.65rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.35);">Brand</span>
+        <span id="navBrandName" style="font-size:0.72rem;font-weight:700;color:#fff;margin-left:8px;letter-spacing:0.5px;">KLIMAITALIA</span>
+      </div>
+      <a id="navDocsLink" href="https://drive.google.com/drive/folders/1He5gvTVGD4C0nqIGuEnYXn_XaUAO32Ri?usp=share_link"
+        target="_blank" rel="noopener"
+        style="font-size:0.65rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+               color:#7C4DFF;text-decoration:none;padding:2px 8px;
+               border:1px solid rgba(124,77,255,0.4);border-radius:5px;
+               transition:all .15s;display:inline-flex;align-items:center;gap:5px;"
+        onmouseover="this.style.background='rgba(124,77,255,0.15)';this.style.borderColor='#7C4DFF';"
+        onmouseout="this.style.background='';this.style.borderColor='rgba(124,77,255,0.4)';">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Download Docs
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ TOP STRIP ══ -->
+<div class="top-strip">
+  <div class="strip-inner">
+
+    <!-- Google Sheets data source -->
+    <div class="csv-sources" id="csvSources">
+      <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--tx-3);">Source</span>
+      <div id="sheetStatus" style="display:inline-flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--border-mid);border-radius:20px;padding:3px 12px 3px 8px;font-size:0.72rem;color:var(--tx-2);">
+        <span id="sheetDot" style="width:6px;height:6px;border-radius:50%;background:var(--tx-3);flex-shrink:0;"></span>
+        <span id="sheetLabel">Connecting to Google Sheets…</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="loadFromSheet()" title="Reload data from Google Sheets" style="padding:5px 10px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Reload
+      </button>
+      <!-- Source tags injected here by JS -->
+      <div id="sourceTags" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="strip-sep"></div>
+
+    <!-- Discounts — compound grid -->
+    <div class="disc-matrix">
+      <!-- Header row -->
+      <div class="dm-header">
+        <div class="dm-cell dm-label-col"></div>
+        <div class="dm-cell dm-qty-col"></div>
+        <div class="dm-cell dm-disc-col dm-col-hd">D1 %</div>
+        <div class="dm-cell dm-disc-col dm-col-hd">D2 %</div>
+        <div class="dm-cell dm-disc-col dm-col-hd">D3 %</div>
+        <div class="dm-cell dm-disc-col dm-col-hd">D4 %</div>
+      </div>
+      <!-- 1 unit row -->
+      <div class="dm-row">
+        <div class="dm-cell dm-label-col"><span class="disc-chip dc1">1 unit</span></div>
+        <div class="dm-cell dm-qty-col"></div>
+        <input class="disc-val dm-cell dm-disc-col" id="d1a" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d1b" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d1c" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d1d" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+      </div>
+      <!-- Q2 row -->
+      <div class="dm-row">
+        <div class="dm-cell dm-label-col"><span class="disc-chip dc2">Q2</span></div>
+        <div class="dm-cell dm-qty-col">
+          <span class="disc-lbl" style="font-size:0.68rem;">≥</span>
+          <input class="qty-val" id="qty2" type="number" min="1" value="0" style="width:38px;" oninput="applyDisc()">
+          <span class="disc-lbl" style="font-size:0.68rem;">pcs</span>
+        </div>
+        <input class="disc-val dm-cell dm-disc-col" id="d2a" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d2b" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d2c" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d2d" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+      </div>
+      <!-- Q3 row -->
+      <div class="dm-row">
+        <div class="dm-cell dm-label-col"><span class="disc-chip dc3">Q3</span></div>
+        <div class="dm-cell dm-qty-col">
+          <span class="disc-lbl" style="font-size:0.68rem;">≥</span>
+          <input class="qty-val" id="qty3" type="number" min="1" value="0" style="width:38px;" oninput="applyDisc()">
+          <span class="disc-lbl" style="font-size:0.68rem;">pcs</span>
+        </div>
+        <input class="disc-val dm-cell dm-disc-col" id="d3a" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d3b" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d3c" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+        <input class="disc-val dm-cell dm-disc-col" id="d3d" type="number" min="0" max="100" step="0.5" placeholder="0" value="0" oninput="applyDisc()">
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ LAYOUT ══ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">Categories</div>
+    <ul class="cat-tree" id="catTree">
+      <li>
+        <button class="cat-btn active" data-cat="" onclick="selCat('')">
+          <span>All Products</span>
+          <span class="cat-count" id="catAllCount">0</span>
+        </button>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg class="search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="searchQ" type="text" placeholder="Search name, SKU, description, category…" oninput="doFilter()">
+      </div>
+      <select class="sort-sel" id="sortSel" onchange="doFilter()">
+        <option value="csv">As listed in Google</option>
+        <option value="az">Name A → Z</option>
+        <option value="za">Name Z → A</option>
+        <option value="lo">Price: Low → High</option>
+        <option value="hi">Price: High → Low</option>
+      </select>
+      <span class="res-count" id="resCnt"></span>
+    </div>
+
+    <div class="products-grid" id="grid">
+      <div class="empty-state">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <p id="emptyMsg">Loading catalogue from Google Sheets…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FLOATING ACTION BAR ══ -->
+<div class="fab-bar" id="fabBar">
+
+  <!-- Favourites section -->
+  <div class="fab-section" id="fabFavSection" style="display:none">
+    <span class="fab-label lbl-fav">★ Saved</span>
+    <div class="fab-chips" id="fabFavChips"></div>
+    <div class="fab-actions">
+      <button class="btn btn-sm" style="background:rgba(255,214,0,0.15);color:#FFD600;border:1px solid rgba(255,214,0,0.3);" onclick="openFavModal()">View all</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearFav()">✕</button>
+    </div>
+  </div>
+
+  <div class="fab-divider" id="fabDiv1" style="display:none"></div>
+
+  <!-- Basket section -->
+  <div class="fab-section" id="fabBskSection" style="display:none">
+    <span class="fab-label lbl-bsk">🛒 Basket</span>
+    <div class="fab-chips" id="fabBskChips"></div>
+    <div class="fab-actions">
+      <button class="btn btn-sm" style="background:#34A853;color:#fff;border:none;" onclick="openBskModal()">View & Share</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearBasket()">✕</button>
+    </div>
+  </div>
+
+  <div class="fab-divider" id="fabDiv2" style="display:none"></div>
+
+  <!-- Compare section -->
+  <div class="fab-section" id="fabCmpSection" style="display:none">
+    <span class="fab-label lbl-cmp">⇄ Compare</span>
+    <div class="fab-chips" id="cmpThumbs"></div>
+    <div class="fab-actions">
+      <button class="btn btn-blue btn-sm" id="cmpGoBtn" style="display:none" onclick="openCmpModal()">Compare now</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearCmp()">✕</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ BASKET MODAL ══ -->
+<div class="bsk-overlay" id="bskOverlay" onclick="if(event.target===this)closeBskModal()">
+  <div class="bsk-modal">
+    <div class="bsk-header">
+      <div class="bsk-title">🛒 Basket &amp; Offer</div>
+      <button class="modal-close-btn" onclick="closeBskModal()">&#x2715;</button>
+    </div>
+    <div class="bsk-body">
+      <table class="bsk-table" id="bskTable"></table>
+    </div>
+    <div id="bskTierHint" style="padding:8px 22px;font-size:0.75rem;border-top:1px solid var(--border);background:var(--surface-2);"></div>
+    <div id="bskDiscSummary" style="padding:6px 22px 10px;font-size:0.68rem;color:var(--tx-3);font-family:monospace;border-bottom:1px solid var(--border);"></div>
+    <div class="bsk-footer">
+      <div class="bsk-footer-note" id="bskNote"></div>
+      <button class="btn btn-ghost btn-sm" onclick="exportBskCSV()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="shareBskURL()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Copy share link
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="shareBskMail()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Send by email
+      </button>
+      <button class="btn btn-sm" style="background:#34A853;color:#fff;border:none;" onclick="printBasket()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print / PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAVOURITES MODAL ══ -->
+<div class="fav-overlay" id="favOverlay" onclick="if(event.target===this)closeFavModal()">
+  <div class="fav-modal">
+    <div class="fav-header">
+      <div class="fav-title">★ Saved Products</div>
+      <button class="modal-close-btn" onclick="closeFavModal()">&#x2715;</button>
+    </div>
+    <div class="fav-body">
+      <div class="fav-grid" id="favGrid"></div>
+    </div>
+    <div class="fav-footer">
+      <button class="btn btn-ghost btn-sm" onclick="shareFavURL()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Copy share link
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="addAllFavToBasket()">🛒 Add all to basket</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearFav()">Clear all</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUCT MODAL ══ -->
+<div class="overlay" id="prodOverlay" onclick="if(event.target===this)closeProdModal()">
+  <div class="modal" id="prodModal">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <div class="modal-brand-tag" id="mBrand"></div>
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-sku-tag" id="mSkuTag"></div>
+      </div>
+      <button class="modal-close-btn" onclick="closeProdModal()">&#x2715;</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Gallery -->
+      <div class="modal-gallery">
+        <div class="gallery-stage" id="gStage" onclick="toggleZoom(this)">
+          <img id="gMain" src="" alt="">
+          <button class="gallery-stage-btn" title="Open fullscreen" onclick="event.stopPropagation();openLb(document.getElementById('gMain').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+          </button>
+        </div>
+        <div class="gallery-thumbs" id="gThumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="modal-info">
+        <div class="modal-short-desc" id="mShort"></div>
+
+        <div class="tabs-strip">
+          <button class="tab-btn on" onclick="switchTab('info',this)">Info</button>
+          <button class="tab-btn" onclick="switchTab('documents',this)">Documents</button>
+        </div>
+
+        <div class="tab-panel on" id="tab-info">
+          <table class="spec-table" id="mSpecTbl"></table>
+          <div class="desc-body" id="mDesc" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"></div>
+        </div>
+        <div class="tab-panel" id="tab-documents"><div id="mDocs"></div></div>
+
+        <div class="modal-prices">
+          <div class="modal-prices-title">Trade Pricing</div>
+          <div id="mPrices"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMPARE MODAL ══ -->
+<div class="cmp-overlay" id="cmpOverlay" onclick="if(event.target===this)closeCmpModal()">
+  <div class="cmp-modal">
+    <div class="cmp-modal-header">
+      <div class="cmp-modal-title">Product Comparison</div>
+      <button class="modal-close-btn" onclick="closeCmpModal()">&#x2715;</button>
+    </div>
+    <div class="cmp-scroll-wrap">
+      <table class="cmp-table" id="cmpTbl"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lb-overlay" id="lbOverlay" onclick="closeLb()">
+  <button class="lb-close" onclick="closeLb()">&#x2715;</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<!-- ══════════════ SCRIPT ══════════════ -->
+<script>
+/* ╔══════════════════════════════════════════════════════════╗
+   ║  BRAND CONFIGURATION — change these 3 values per brand  ║
+   ╚══════════════════════════════════════════════════════════╝ */
+const BRAND_NAME      = 'KLIMAITALIA';
+const BRAND_DRIVE_URL = 'https://drive.google.com/drive/folders/1He5gvTVGD4C0nqIGuEnYXn_XaUAO32Ri?usp=share_link';
+// APPS_SCRIPT_URL is defined below — move it here for clarity
+/* ══════════════════════════════════════════════════════════ */
+
+/* ─── STATE ─────────────────────────────────────── */
+let allProducts  = [];   // merged from all loaded CSVs
+let sources      = [];   // [{name, products[]}]
+let currentCat   = '';
+let cmpList      = [];   // up to 4 products for compare
+let favList      = [];   // favourites
+let basketItems  = [];   // [{id, qty}]
+let disc         = {t1:[0,0,0,0], t2:[0,0,0,0], t3:[0,0,0,0], q2:0, q3:0};
+let curGallery   = [];
+
+/* ─── CSV PARSER ─────────────────────────────────── */
+function parseCSV(text){
+  const rows=[]; let cur=''; let inQ=false; const line=[];
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(c==='"'){if(inQ&&n==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){line.push(cur);cur='';}
+    else if((c==='\n'||c==='\r')&&!inQ){
+      if(c==='\r'&&n==='\n')i++;
+      line.push(cur);rows.push(line.slice());line.length=0;cur='';
+    }else cur+=c;
+  }
+  line.push(cur);rows.push(line.slice());
+  return rows.filter(r=>r.some(c=>c.trim()));
+}
+
+function gv(row,i){return i>=0?(row[i]||'').trim().replace(/^"|"$/g,'').trim():'';}
+function pf(s){return parseFloat((s||'').replace(',','.'))||0;}
+
+function csvToProds(text, sourceName){
+  const rows=parseCSV(text);
+  if(rows.length<2)return[];
+  const hdr=rows[0].map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase().replace(/\s+/g,'_'));
+  const gi=k=>hdr.indexOf(k);
+  const prods=[];
+  for(let i=1;i<rows.length;i++){
+    const row=rows[i];
+    if(!row||row.every(c=>!c.trim()))continue;
+    if(gv(row,gi('type'))==='variation')continue;
+    const name=gv(row,gi('name'))||gv(row,gi('what'))||gv(row,0);
+    if(!name)continue;
+    const rp=pf(gv(row,gi('regular_price')))||pf(gv(row,gi('sale_price')))||0;
+    if(rp<=0)continue;
+
+    // Attributes
+    const attrs=[];
+    for(let a=1;a<=6;a++){
+      const an=gv(row,gi('attribute_'+a+'_name'));
+      const av=gv(row,gi('attribute_'+a+'_value'));
+      if(an&&av)attrs.push({name:an,value:av});
+    }
+    // Images: prefer avif, fallback jpg
+    // Primary = image_avif, secondary = image_2, image_3, image_4 (jpg)
+    const avif=gv(row,gi('image_avif'));
+    const jpg =gv(row,gi('image'));
+    const primaryImg = avif || jpg;
+    const extraImgs=['image_2','image_3','image_4'].map(k=>gv(row,gi(k))).filter(Boolean);
+    const imgs=[primaryImg,...extraImgs].filter(Boolean);
+
+    // Documents
+    const docs=[];
+    [['datasheet_url','Datasheet'],['manual_url','Manual'],
+     ['technicalmanual_url','Technical Manual'],['drawing_url','Drawing'],
+     ['catalogue_url','Catalogue'],['card_url','Product Card'],
+     ['brandcatalogue_url','Brand Catalogue']
+    ].forEach(([k,lbl])=>{
+      const v=gv(row,gi(k));
+      if(v&&!v.includes('/nan')&&!v.includes('_nan'))docs.push({url:v,label:lbl});
+    });
+    // Dimensions
+    const dims=[];
+    [['width','Width','width_unit'],['length','Depth','length_unit'],['height','Height','height_unit']].forEach(([dk,dl,uk])=>{
+      const v=gv(row,gi(dk));const u=gv(row,gi(uk))||'mm';
+      if(v&&v!=='0'&&v!=='0,0'&&v!=='0.0')dims.push({label:dl,val:v,unit:u});
+    });
+    const wt=gv(row,gi('weight'));const wtu=gv(row,gi('weight_unit'))||'kg';
+    if(wt&&wt!=='0'&&wt!=='0,0')dims.push({label:'Weight',val:wt,unit:wtu});
+
+    prods.push({
+      _idx:    i,                    // original CSV row index → used for "CSV order" sort
+      _src:    sourceName,
+      id:      gv(row,gi('yyy'))||gv(row,gi('sku'))||`${sourceName}_${i}`,
+      sku:     gv(row,gi('sku')),
+      name,
+      brand:   gv(row,gi('brand')),
+      categories: gv(row,gi('categories')),
+      short_desc: gv(row,gi('description_short')),
+      description:gv(row,gi('description')),
+      regular_price: rp,
+      imgs, attrs, docs, dims,
+      stock_status: gv(row,gi('in_stock'))||gv(row,gi('stock_status')),
+      ean: gv(row,gi('ean')),
+      video_url: gv(row,gi('video_url')),
+    });
+  }
+  return prods;
+}
+
+/* ─── GOOGLE SHEETS AUTO-LOAD via Apps Script ───── */
+// ↓ BRAND CONFIG: change this URL for each brand
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzG3U4bSAfV1J3bXybZ6c0tSE-ZbkCH8P1odN8m4zI2lhVV-f_WvfJzjosoQUezgVGMw/exec';
+const SHEET_NAME      = 'Google Sheets Catalogue';
+
+function setSheetStatus(state, text){
+  const dot   = document.getElementById('sheetDot');
+  const label = document.getElementById('sheetLabel');
+  label.textContent = text;
+  const colors = { loading:'#FBBC04', ok:'#34A853', error:'#EA4335' };
+  dot.style.background = colors[state] || '#767676';
+}
+
+async function loadFromSheet(){
+  setSheetStatus('loading', 'Loading from Google Sheets…');
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    if(!text || text.trim().length < 10) throw new Error('Empty response from Apps Script');
+
+    // Svuota completamente prima di ricaricare — evita doppioni
+    sources = [];
+    allProducts = [];
+    const prods = csvToProds(text, SHEET_NAME);
+    if(!prods.length) throw new Error('No products parsed — check the Apps Script is deployed correctly');
+
+    sources.push({ name: SHEET_NAME, products: prods });
+    rebuildAll();
+    setSheetStatus('ok', `Google Sheets · ${prods.length} products`);
+    const em = document.getElementById('emptyMsg');
+    if(em) em.textContent = 'No products match the current filters.';
+    restoreFromURL();
+
+  } catch(err) {
+    setSheetStatus('error', 'Load failed — ' + err.message);
+    const em = document.getElementById('emptyMsg');
+    if(em) em.innerHTML = `Failed to load from Google Sheets.<br><small style="color:var(--tx-3)">${err.message}</small><br><br><button class="btn btn-blue btn-sm" onclick="loadFromSheet()">Retry</button>`;
+    console.error('Sheet load error:', err);
+  }
+}
+
+function removeSource(name){
+  sources=sources.filter(s=>s.name!==name);
+  rebuildAll();
+}
+
+function rebuildAll(){
+  allProducts=[];
+  sources.forEach(s=>allProducts.push(...s.products));
+  renderSourceTags();
+  buildCatTree(allProducts);
+  doFilter();
+}
+
+function renderSourceTags(){
+  const el=document.getElementById('sourceTags');
+  el.innerHTML=sources.map(s=>`
+    <div class="csv-source-tag">
+      <span class="src-dot"></span>
+      <span>${esc(s.name)} <span style="color:var(--tx-3)">(${s.products.length})</span></span>
+      <button class="src-rm" onclick="removeSource('${esc(s.name)}')" title="Unload this file">&#x2715;</button>
+    </div>`).join('');
+}
+
+/* ─── CATEGORY TREE ──────────────────────────────── */
+function buildCatTree(products){
+  const root={ch:{},count:products.length,path:''};
+  products.forEach(p=>{
+    if(!p.categories)return;
+    const segs=p.categories.split('>').map(s=>s.trim()).filter(Boolean);
+    let node=root;
+    segs.forEach((seg,i)=>{
+      if(!node.ch[seg])node.ch[seg]={ch:{},count:0,path:segs.slice(0,i+1).join('>')};
+      node.ch[seg].count++;
+      node=node.ch[seg];
+    });
+  });
+  const tree=document.getElementById('catTree');
+  tree.innerHTML=`<li><button class="cat-btn ${currentCat===''?'active':''}" data-cat="" onclick="selCat('')"><span>All Products</span><span class="cat-count">${products.length}</span></button></li>`;
+  function rc(node,parent,depth){
+    Object.entries(node.ch).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([seg,child])=>{
+      const hasC=Object.keys(child.ch).length>0;
+      const li=document.createElement('li');
+      const isA=currentCat===child.path;
+      const btn=document.createElement('button');
+      btn.className='cat-btn'+(isA?' active':'');
+      btn.setAttribute('data-cat',child.path);
+      if(hasC)btn.setAttribute('aria-expanded','false');
+      btn.innerHTML=(hasC?`<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>`:`<span style="width:11px;flex-shrink:0"></span>`)+
+        `<span>${esc(seg)}</span><span class="cat-count">${child.count}</span>`;
+      li.appendChild(btn);
+      if(hasC){
+        const ul=document.createElement('ul');
+        ul.className='cat-children';
+        rc(child,ul,depth+1);
+        li.appendChild(ul);
+        btn.onclick=e=>{e.stopPropagation();selCat(child.path);const open=ul.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false');};
+      }else{
+        btn.onclick=e=>{e.stopPropagation();selCat(child.path);};
+      }
+      parent.appendChild(li);
+    });
+  }
+  rc(root,tree,0);
+}
+
+function selCat(path){
+  currentCat=path;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-cat')===path));
+  doFilter();
+}
+
+/* ─── DISCOUNTS ──────────────────────────────────── */
+/* compoundNet: apply up to 4 successive % discounts on base price */
+function compoundNet(base, ...pcts){
+  return pcts.reduce((v,p)=>v*(1-(p||0)/100), base);
+}
+/* For display: effective single % equivalent */
+function effectivePct(base, netPrice){ return base>0 ? (1-netPrice/base)*100 : 0; }
+
+function readTier(a,b,c,d){
+  return [a,b,c,d].map(id=>parseFloat(document.getElementById(id).value)||0);
+}
+
+function applyDisc(){
+  disc.t1 = readTier('d1a','d1b','d1c','d1d');
+  disc.t2 = readTier('d2a','d2b','d2c','d2d');
+  disc.t3 = readTier('d3a','d3b','d3c','d3d');
+
+  // Valida quantità minime: Q2 >= 2, Q3 >= 3
+  const q2el = document.getElementById('qty2');
+  const q3el = document.getElementById('qty3');
+  let q2v = parseInt(q2el.value) || 0;
+  let q3v = parseInt(q3el.value) || 0;
+  if(q2v > 0 && q2v < 2){ q2v = 2; q2el.value = 2; }
+  if(q3v > 0 && q3v < 3){ q3v = 3; q3el.value = 3; }
+  disc.q2 = q2v;
+  disc.q3 = q3v;
+  doFilter();
+}
+const net=(base,pct)=>base*(1-pct/100);
+const netTier=(base,tier)=>compoundNet(base,...tier);
+const fmt=n=>'\u20AC\u202f'+n.toFixed(2);
+
+/* ─── FILTER + SORT + RENDER ─────────────────────── */
+function doFilter(){
+  const q=document.getElementById('searchQ').value.toLowerCase().trim();
+  const sort=document.getElementById('sortSel').value;
+
+  let list=allProducts.filter(p=>{
+    const mc=!currentCat||p.categories===currentCat||p.categories.startsWith(currentCat+'>');
+    const mq=!q||p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q)||
+      (p.short_desc||'').toLowerCase().includes(q)||(p.description||'').toLowerCase().includes(q)||
+      p.categories.toLowerCase().includes(q)||(p.brand||'').toLowerCase().includes(q);
+    return mc&&mq;
+  });
+
+  // Sort
+  // "csv" = preserve original row order (_idx) within each source, sources in load order
+  if(sort==='csv'){
+    // already in push-order from rebuildAll; no extra sort needed
+  } else if(sort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==='za') list.sort((a,b)=>b.name.localeCompare(a.name));
+  else if(sort==='lo') list.sort((a,b)=>a.regular_price-b.regular_price);
+  else if(sort==='hi') list.sort((a,b)=>b.regular_price-a.regular_price);
+
+  document.getElementById('resCnt').textContent=`${list.length} product${list.length!==1?'s':''}`;
+  renderGrid(list);
+}
+
+function renderGrid(list){
+  const grid=document.getElementById('grid');
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><p>No products match your search or filter</p></div>`;
+    return;
+  }
+  grid.innerHTML=list.map(p=>cardHtml(p)).join('');
+}
+
+function allZero(tier){ return tier.every(v=>!v||v===0); }
+function discActive(){ return !allZero(disc.t1)||!allZero(disc.t2)||!allZero(disc.t3); }
+function tierActive(tier, qty){ return !allZero(tier) && (qty === undefined || qty > 0); }
+
+function cardHtml(p){
+  const base=p.regular_price;
+  const n1=netTier(base,disc.t1),n2=netTier(base,disc.t2),n3=netTier(base,disc.t3);
+  const active=discActive();
+  const img=p.imgs[0]||'';
+  const inCmp=cmpList.some(c=>c.id===p.id);
+  const dims=p.dims.map(d=>`<span class="dim-pill">${d.label}: ${d.val} ${d.unit}</span>`).join('');
+  return`<div class="product-card" onclick="openProd('${esc(p.id)}')">
+  <div class="card-img-wrap">
+    <div class="img-overlay">
+      <button class="zoom-btn" onclick="event.stopPropagation();openLb('${esc(img)}')" title="Fullscreen">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+    ${img?`<img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="card-img-ph">&#128230;</div>`}
+  </div>
+  <div class="card-actions" onclick="event.stopPropagation()">
+    <button type="button" class="card-action-btn ${inCmp?'cmp-active':''}" onclick="event.stopPropagation();toggleCmp('${esc(p.id)}')" title="Compare">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>
+      ${inCmp?'✓ Compare':'Compare'}
+    </button>
+    <button type="button" class="card-action-btn ${favList.some(f=>f.id===p.id)?'fav-active':''}" onclick="event.stopPropagation();toggleFav('${esc(p.id)}')" title="Favourite">
+      ${favList.some(f=>f.id===p.id)?'★ Saved':'☆ Save'}
+    </button>
+    <button type="button" class="card-action-btn ${basketItems.some(b=>b.id===p.id)?'bsk-active':''}" onclick="event.stopPropagation();addToBasket('${esc(p.id)}')" title="Add to basket">
+      ${basketItems.some(b=>b.id===p.id)?'🛒 +1':'🛒 Add'}
+    </button>
+  </div>
+  <div class="card-body">
+    <div class="card-sku">${esc(p.sku)}${p.brand?' &middot; '+esc(p.brand):''}</div>
+    <div class="card-name">${esc(p.name)}</div>
+    ${p.short_desc?`<div class="card-short">${esc(p.short_desc.substring(0,110))}${p.short_desc.length>110?'&hellip;':''}</div>`:''}
+    ${dims?`<div class="card-dims">${dims}</div>`:''}
+  </div>
+  <div class="card-prices">
+    <div class="p-row">
+      <div class="p-lbl" style="color:#f0f0f0">${active?'List price':'Price'}</div>
+      <div class="p-vals"><div class="p-net" style="color:#fff">${fmt(base)}</div></div>
+    </div>
+    ${tierActive(disc.t1)?`
+    <div class="p-row">
+      <div class="p-lbl"><div class="p-chip dc1">1 unit</div></div>
+      <div class="p-vals"><div class="p-net" style="color:#FFD600">${fmt(n1)}</div>${n1<base?`<div class="p-save" style="color:#FFD600">−${((1-n1/base)*100).toFixed(1)}%</div>`:''}</div>
+    </div>`:''}
+    ${tierActive(disc.t2, disc.q2)?`
+    <div class="p-row">
+      <div class="p-lbl"><div class="p-chip dc2">Q2</div><span style="color:#f0f0f0;font-size:0.7rem">&#8805;${disc.q2} pcs</span></div>
+      <div class="p-vals"><div class="p-net" style="color:#FF8C00">${fmt(n2)}</div>${n2<base?`<div class="p-save" style="color:#FF8C00">−${((1-n2/base)*100).toFixed(1)}%</div>`:''}</div>
+    </div>`:''}
+    ${tierActive(disc.t3, disc.q3)?`
+    <div class="p-row">
+      <div class="p-lbl"><div class="p-chip dc3">Q3</div><span style="color:#f0f0f0;font-size:0.7rem">&#8805;${disc.q3} pcs</span></div>
+      <div class="p-vals"><div class="p-net" style="color:#E53935">${fmt(n3)}</div>${n3<base?`<div class="p-save" style="color:#E53935">−${((1-n3/base)*100).toFixed(1)}%</div>`:''}</div>
+    </div>`:''}
+  </div>
+</div>`;
+}
+
+/* ─── PRODUCT MODAL ──────────────────────────────── */
+function openProd(id){
+  const p=allProducts.find(p=>String(p.id)===String(id));if(!p)return;
+  curGallery=p.imgs.length?p.imgs:[];
+
+  // Gallery
+  document.getElementById('gMain').src=curGallery[0]||'';
+  const thumbs=document.getElementById('gThumbs');
+  thumbs.innerHTML=curGallery.map((img,i)=>
+    `<div class="g-thumb ${i===0?'on':''}" onclick="setGallImg(${i})"><img src="${esc(img)}" alt="" onerror="this.parentElement.style.display='none'"></div>`
+  ).join('');
+  document.getElementById('gStage').classList.remove('zoomed');
+
+  // Header
+  document.getElementById('mBrand').textContent=p.brand||'';
+  document.getElementById('mTitle').textContent=p.name;
+  document.getElementById('mSkuTag').textContent='SKU: '+p.sku+(p.ean?'  ·  EAN: '+p.ean:'');
+  document.getElementById('mShort').textContent=p.short_desc||'';
+  document.getElementById('mDesc').textContent=p.description||'No additional description.';
+
+  // Specs
+  const specs=[];
+  if(p.brand)specs.push(['Brand',p.brand]);
+  specs.push(['SKU',p.sku]);
+  if(p.ean)specs.push(['EAN',p.ean]);
+  if(p.categories)specs.push(['Category',p.categories.replace(/>/g,' › ')]);
+  p.dims.forEach(d=>specs.push([d.label,d.val+' '+d.unit]));
+  p.attrs.forEach(a=>specs.push([a.name,a.value]));
+  specs.push(['Availability', p.stock_status||'—']);
+  if(p._src)specs.push(['Source',p._src]);
+  document.getElementById('mSpecTbl').innerHTML=specs.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('');
+
+  // Docs
+  const docsEl=document.getElementById('mDocs');
+  docsEl.innerHTML=p.docs.length?p.docs.map(d=>`
+    <a class="doc-item" href="${esc(d.url)}" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      ${esc(d.label)}
+      <svg class="doc-ext-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>`).join(''):`<p style="font-size:0.78rem;color:var(--tx-3)">No documents available.</p>`;
+
+  // Prices
+  const base=p.regular_price;
+  const mn1=netTier(base,disc.t1), mn2=netTier(base,disc.t2), mn3=netTier(base,disc.t3);
+  document.getElementById('mPrices').innerHTML=`
+    <div class="mp-row">
+      <div class="mp-lbl">${discActive()?'List price':'Price'}</div>
+      <div class="mp-net" style="color:#fff">${fmt(base)}</div>
+    </div>
+    ${tierActive(disc.t1)?`
+    <div class="mp-row">
+      <div class="mp-lbl"><div class="p-chip dc1">1 unit</div></div>
+      <div class="mp-net" style="color:#FFD600">${fmt(mn1)}${mn1<base?' <small style=\'opacity:.65\'>−'+((1-mn1/base)*100).toFixed(1)+'%</small>':''}</div>
+    </div>`:''}
+    ${tierActive(disc.t2, disc.q2)?`
+    <div class="mp-row">
+      <div class="mp-lbl"><div class="p-chip dc2">Q2</div><span style="font-size:0.75rem">≥${disc.q2} pcs</span></div>
+      <div class="mp-net" style="color:#FF8C00">${fmt(mn2)}${mn2<base?' <small style=\'opacity:.65\'>−'+((1-mn2/base)*100).toFixed(1)+'%</small>':''}</div>
+    </div>`:''}
+    ${tierActive(disc.t3, disc.q3)?`
+    <div class="mp-row">
+      <div class="mp-lbl"><div class="p-chip dc3">Q3</div><span style="font-size:0.75rem">≥${disc.q3} pcs</span></div>
+      <div class="mp-net" style="color:#E53935">${fmt(mn3)}${mn3<base?' <small style=\'opacity:.65\'>−'+((1-mn3/base)*100).toFixed(1)+'%</small>':''}</div>
+    </div>`:''}`;
+
+  // Reset tabs
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
+  document.querySelectorAll('.tab-panel').forEach((el,i)=>el.classList.toggle('on',i===0));
+
+  document.getElementById('prodOverlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+
+function setGallImg(i){
+  curGallery[i]&&(document.getElementById('gMain').src=curGallery[i]);
+  document.querySelectorAll('.g-thumb').forEach((t,j)=>t.classList.toggle('on',i===j));
+}
+function toggleZoom(el){el.classList.toggle('zoomed');}
+function closeProdModal(){document.getElementById('prodOverlay').classList.remove('on');document.body.style.overflow='';}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tab-'+id).classList.add('on');
+}
+
+/* ─── LIGHTBOX ───────────────────────────────────── */
+function openLb(url){if(!url)return;document.getElementById('lbImg').src=url;document.getElementById('lbOverlay').classList.add('on');}
+function closeLb(){document.getElementById('lbOverlay').classList.remove('on');}
+
+/* ─── COMPARE ────────────────────────────────────── */
+function toggleCmp(id){
+  const p=allProducts.find(p=>String(p.id)===String(id));if(!p)return;
+  const idx=cmpList.findIndex(c=>c.id===p.id);
+  if(idx>=0)cmpList.splice(idx,1);
+  else{if(cmpList.length>=4){alert('Max 4 products for comparison.');return;}cmpList.push(p);}
+  updateCmpBar();
+  doFilter();
+}
+
+function updateCmpBar(){ updateFAB(); }
+function _updateCmpBarOld(){
+  const bar=document.getElementById('cmpBar');
+  const thumbsEl=document.getElementById('cmpThumbs');
+  const goBtn=document.getElementById('cmpGoBtn');
+  const hint=document.getElementById('cmpHint');
+  const navBtn=document.getElementById('navCmpBtn');
+  const navCnt=document.getElementById('navCmpCount');
+
+  bar.classList.toggle('on',true); // always show bar once at least 1
+  if(cmpList.length===0){bar.classList.remove('on');return;}
+
+  navBtn.style.display=cmpList.length>=2?'inline-flex':'none';
+  navCnt.textContent=cmpList.length;
+  goBtn.style.display=cmpList.length>=2?'inline-flex':'none';
+  hint.style.display=cmpList.length>=2?'none':'inline';
+
+  thumbsEl.innerHTML=cmpList.map(p=>`
+    <div class="cmp-thumb-item">
+      ${p.imgs[0]?`<img class="cmp-thumb-img" src="${esc(p.imgs[0])}" alt="" onerror="this.style.display='none'">`:''}
+      <span class="cmp-thumb-name">${esc(p.name)}</span>
+      <button class="cmp-rm" onclick="toggleCmp('${esc(p.id)}')">&#x2715;</button>
+    </div>`).join('');
+}
+
+function clearCmp(){cmpList=[];updateCmpBar();doFilter();}
+
+function openCmpModal(){
+  if(cmpList.length<2){alert('Select at least 2 products to compare.');return;}
+  buildCmpTable();
+  document.getElementById('cmpOverlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeCmpModal(){document.getElementById('cmpOverlay').classList.remove('on');document.body.style.overflow='';}
+
+function buildCmpTable(){
+  const ps=cmpList;
+  const attrKeys=new Set();
+  ps.forEach(p=>p.attrs.forEach(a=>attrKeys.add(a.name)));
+
+  const rows=[];
+  rows.push({label:'',cells:ps.map(p=>`<div class="cmp-img-cell">${p.imgs[0]?`<img src="${esc(p.imgs[0])}" alt="">`:'—'}</div>`),isImg:true});
+  rows.push({label:'Name',cells:ps.map(p=>`<strong>${esc(p.name)}</strong>`)});
+  rows.push({label:'SKU',cells:ps.map(p=>esc(p.sku))});
+  rows.push({label:'Brand',cells:ps.map(p=>esc(p.brand||'—'))});
+  rows.push({label:'Category',cells:ps.map(p=>esc(p.categories.replace(/>/g,' › ')))});
+  rows.push({label:'List Price',cells:ps.map(p=>fmt(p.regular_price))});
+  rows.push({label:'1 unit',cells:ps.map(p=>`<span style="color:#FFD600;font-weight:700">${fmt(netTier(p.regular_price,disc.t1))}</span>`), isPriceRow:true});
+  rows.push({label:`Q2 ≥${disc.q2} pcs`,cells:ps.map(p=>`<span style="color:#FF8C00;font-weight:700">${fmt(netTier(p.regular_price,disc.t2))}</span>`), isPriceRow:true});
+  rows.push({label:`Q3 ≥${disc.q3} pcs`,cells:ps.map(p=>`<span style="color:#E53935;font-weight:700">${fmt(netTier(p.regular_price,disc.t3))}</span>`), isPriceRow:true});
+  ['Width','Depth','Height','Weight'].forEach(dl=>{
+    const vals=ps.map(p=>{const d=p.dims.find(d=>d.label===dl);return d?`${d.val} ${d.unit}`:'—';});
+    rows.push({label:dl,cells:vals.map(v=>esc(v)),diff:!vals.every(v=>v===vals[0])});
+  });
+  attrKeys.forEach(key=>{
+    const vals=ps.map(p=>{const a=p.attrs.find(a=>a.name===key);return a?a.value:'—';});
+    rows.push({label:key,cells:vals.map(v=>esc(v)),diff:!vals.every(v=>v===vals[0])});
+  });
+
+  document.getElementById('cmpTbl').innerHTML=
+    `<thead><tr><th style="text-align:left;min-width:120px">Feature</th>${ps.map(p=>`<th>${esc(p.name.length>30?p.name.slice(0,30)+'…':p.name)}</th>`).join('')}</tr></thead>`+
+    `<tbody>${rows.map(r=>`<tr><td>${r.label||''}</td>${r.cells.map(c=>`<td class="${r.diff?'cmp-diff':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+/* ─── UTILS ──────────────────────────────────────── */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+
+/* ═══════════════════════════════════════════════════════
+   FAVOURITES
+═══════════════════════════════════════════════════════ */
+function toggleFav(id){
+  const p=allProducts.find(p=>String(p.id)===String(id));if(!p)return;
+  const idx=favList.findIndex(f=>f.id===p.id);
+  if(idx>=0)favList.splice(idx,1);else favList.push(p);
+  updateFAB(); doFilter();
+}
+function clearFav(){ favList=[]; updateFAB(); doFilter(); closeFavModal(); }
+
+function openFavModal(){
+  const grid=document.getElementById('favGrid');
+  if(!favList.length){ grid.innerHTML='<p style="color:var(--tx-3);font-size:0.85rem;">No saved products yet.</p>'; }
+  else{
+    grid.innerHTML=favList.map(p=>{
+      const img=p.imgs[0]||'';
+      const price=netTier(p.regular_price, disc.t1);
+      return`<div class="fav-card" onclick="closeFavModal();openProd('${esc(p.id)}')">
+        ${img?`<img src="${esc(img)}" alt="" onerror="this.style.display='none'">`:''}
+        <div class="fav-card-name">${esc(p.name)}</div>
+        <div class="fav-card-sku">${esc(p.sku)}</div>
+        <div class="fav-card-price">${fmt(p.regular_price)}</div>
+        <div class="fav-card-actions" onclick="event.stopPropagation()">
+          <button class="card-action-btn bsk-active" style="flex:1" onclick="addToBasket('${esc(p.id)}')">🛒 Basket</button>
+          <button class="card-action-btn" style="flex:1;color:#E53935;border-color:rgba(229,57,53,0.3)" onclick="toggleFav('${esc(p.id)}');event.stopPropagation()">✕ Remove</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('favOverlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeFavModal(){ document.getElementById('favOverlay').classList.remove('on'); document.body.style.overflow=''; }
+function addAllFavToBasket(){ favList.forEach(p=>addToBasket(p.id,false)); updateFAB(); doFilter(); closeFavModal(); }
+
+/* ═══════════════════════════════════════════════════════
+   BASKET
+═══════════════════════════════════════════════════════ */
+function getBasketItem(id){ return basketItems.find(b=>String(b.id)===String(id)); }
+
+function addToBasket(id, rerender=true){
+  const existing=getBasketItem(id);
+  if(existing){ existing.qty++; }
+  else { basketItems.push({id:String(id), qty:1}); }
+  if(rerender){ updateFAB(); doFilter(); }
+}
+function setBasketQty(id, qty){
+  const n=Math.max(0,parseInt(qty)||0);
+  if(n===0){ basketItems=basketItems.filter(b=>String(b.id)!==String(id)); }
+  else{ const item=getBasketItem(id); if(item)item.qty=n; }
+  renderBskTable(); updateFAB(); doFilter();
+}
+function removeFromBasket(id){ basketItems=basketItems.filter(b=>String(b.id)!==String(id)); renderBskTable(); updateFAB(); doFilter(); }
+function clearBasket(){ basketItems=[]; updateFAB(); doFilter(); closeBskModal(); }
+
+/* ═══════════════════════════════════════════════════════
+   BASKET — TIER LOGIC (quantità CUMULATIVE sul totale basket)
+   La soglia Q2/Q3 si calcola sul totale dei pezzi nel basket,
+   non sulla quantità del singolo prodotto.
+   Tutti i prodotti nel basket ricevono lo stesso tier.
+═══════════════════════════════════════════════════════ */
+
+/* Calcola il totale pezzi nel basket */
+function basketTotalQty(){
+  return basketItems.reduce((s,b)=>s+b.qty,0);
+}
+
+/* Tier applicabile in base al totale pezzi */
+function basketTier(){
+  const total = basketTotalQty();
+  if(!allZero(disc.t3) && disc.q3>=3 && total>=disc.q3) return 't3';
+  if(!allZero(disc.t2) && disc.q2>=2 && total>=disc.q2) return 't2';
+  return 't1';
+}
+
+/* Prezzo unitario in base al tier basket */
+function unitPriceForProduct(base){
+  const t = basketTier();
+  if(t==='t3') return netTier(base, disc.t3);
+  if(t==='t2') return netTier(base, disc.t2);
+  return netTier(base, disc.t1);
+}
+
+/* Label tier con colore */
+function tierBadge(t){
+  if(t==='t3') return `<span class="bsk-tier-tag bsk-tier3">Q3 ≥${disc.q3} pcs</span>`;
+  if(t==='t2') return `<span class="bsk-tier-tag bsk-tier2">Q2 ≥${disc.q2} pcs</span>`;
+  if(discActive()) return `<span class="bsk-tier-tag bsk-tier1">1 unit</span>`;
+  return '';
+}
+
+/* Descrizione testuale degli sconti applicati */
+function discSummaryText(){
+  function tierDesc(tier, label, qty){
+    const nonzero = tier.filter(v=>v>0);
+    if(!nonzero.length) return null;
+    const pcts = nonzero.map(v=>v+'%').join(' + ');
+    const eff  = (effectivePct(100, compoundNet(100,...tier))).toFixed(2);
+    return `${label}${qty?` (≥${qty} pcs)`:''}:  ${pcts}  →  −${eff}% effective`;
+  }
+  const lines = [];
+  const d1 = tierDesc(disc.t1, '1 unit', null);
+  const d2 = tierDesc(disc.t2, 'Q2', disc.q2);
+  const d3 = tierDesc(disc.t3, 'Q3', disc.q3);
+  if(d1) lines.push(d1);
+  if(d2) lines.push(d2);
+  if(d3) lines.push(d3);
+  return lines.length ? lines.join('   |   ') : 'No discounts applied — showing list prices.';
+}
+
+/* Quanti pezzi mancano al prossimo tier */
+function pcsToNextTier(){
+  const total = basketTotalQty();
+  const t = basketTier();
+  if(t==='t3') return null; // already at max
+  if(t==='t2' && !allZero(disc.t3) && disc.q3>=3){
+    const need = disc.q3 - total;
+    if(need>0) return {need, nextTier:'t3', label:`Q3 (≥${disc.q3} pcs)`, color:'#E53935'};
+  }
+  if(t==='t1' && !allZero(disc.t2) && disc.q2>=2){
+    const need = disc.q2 - total;
+    if(need>0) return {need, nextTier:'t2', label:`Q2 (≥${disc.q2} pcs)`, color:'#FF8C00'};
+  }
+  return null;
+}
+
+function renderBskTable(){
+  const tbl = document.getElementById('bskTable');
+  if(!tbl) return; // modal not in DOM yet
+  const noteEl = document.getElementById('bskNote');
+  const hintEl = document.getElementById('bskTierHint');
+  const summaryEl = document.getElementById('bskDiscSummary');
+
+  if(!basketItems.length){
+    tbl.innerHTML='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--tx-3);font-size:0.85rem;">Basket is empty.<br><small>Use the 🛒 Add button on any product card.</small></td></tr>';
+    if(noteEl) noteEl.textContent='';
+    if(hintEl) hintEl.innerHTML='';
+    if(summaryEl) summaryEl.textContent='';
+    return;
+  }
+
+  const totalQty  = basketTotalQty();
+  const tier      = basketTier();
+  const tierLabel = tier==='t3'?'Q3':tier==='t2'?'Q2':'1 unit';
+  const tierColor = tier==='t3'?'#E53935':tier==='t2'?'#FF8C00':'#FFD600';
+
+  // Discount summary bar
+  if(summaryEl) summaryEl.textContent = discSummaryText();
+
+  // Next-tier hint
+  if(hintEl){
+    const next = pcsToNextTier();
+    if(next){
+      hintEl.innerHTML = `<span style="color:${next.color}">💡 Add ${next.need} more piece${next.need!==1?'s':''} to reach <strong>${next.label}</strong> on the entire basket</span>`;
+    } else if(discActive()){
+      hintEl.innerHTML = `<span style="color:#34A853">✓ Best tier applied: <strong>${tierLabel}</strong> on all ${totalQty} pieces</span>`;
+    } else {
+      hintEl.innerHTML='';
+    }
+  }
+
+  let grandListTotal = 0;
+  let grandNetTotal  = 0;
+
+  const rows = basketItems.map(b=>{
+    const p = allProducts.find(p=>String(p.id)===String(b.id));
+    if(!p) return '';
+    const img     = p.imgs[0]||'';
+    const listP   = p.regular_price;
+    const netP    = unitPriceForProduct(listP);
+    const lineNet = netP * b.qty;
+    const lineList= listP * b.qty;
+    grandListTotal += lineList;
+    grandNetTotal  += lineNet;
+    const discPct  = listP>0 ? ((1-netP/listP)*100) : 0;
+
+    return`<tr>
+      <td style="padding:8px 6px">
+        ${img?`<img class="bsk-img" src="${esc(img)}" onerror="this.style.display='none'">`:'<div style="width:40px;height:40px;background:var(--surface-3);border-radius:5px;"></div>'}
+      </td>
+      <td style="padding:8px 6px">
+        <div class="bsk-name">${esc(p.name)}</div>
+        <div class="bsk-sku">${esc(p.sku)}${p.brand?' · '+esc(p.brand):''}</div>
+      </td>
+      <td style="text-align:center;padding:8px 6px">
+        <div class="bsk-qty-ctrl">
+          <button class="bsk-qty-btn" onclick="setBasketQty('${esc(b.id)}',${b.qty-1})">−</button>
+          <input class="bsk-qty-num" type="number" min="0" value="${b.qty}"
+            onchange="setBasketQty('${esc(b.id)}',this.value)" style="width:42px">
+          <button class="bsk-qty-btn" onclick="setBasketQty('${esc(b.id)}',${b.qty+1})">+</button>
+        </div>
+      </td>
+      <td style="padding:8px 6px;text-align:right">
+        ${discPct>0?`<div style="font-size:0.68rem;color:var(--tx-3);text-decoration:line-through;">${fmt(listP)}</div>`:''}
+        <div style="font-weight:700;color:${discPct>0?tierColor:'#fff'}">${fmt(netP)}</div>
+        ${discPct>0?`<div style="font-size:0.62rem;color:${tierColor}">−${discPct.toFixed(1)}%</div>`:''}
+      </td>
+      <td style="padding:8px 6px;text-align:right">
+        ${discPct>0?`<div style="font-size:0.68rem;color:var(--tx-3);text-decoration:line-through;">${fmt(lineList)}</div>`:''}
+        <strong style="color:${discPct>0?tierColor:'#fff'}">${fmt(lineNet)}</strong>
+        <button style="background:none;border:none;cursor:pointer;color:var(--tx-3);font-size:0.85rem;padding:0;margin-left:8px;vertical-align:middle"
+          onclick="removeFromBasket('${esc(b.id)}')" title="Remove from basket">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const saving  = grandListTotal - grandNetTotal;
+  const savePct = grandListTotal>0 ? (saving/grandListTotal*100) : 0;
+
+  tbl.innerHTML=`
+    <thead>
+      <tr style="background:var(--surface-3)">
+        <th style="width:52px;padding:8px 6px"></th>
+        <th style="padding:8px 6px;text-align:left">Product</th>
+        <th style="width:130px;padding:8px 6px;text-align:center">Qty</th>
+        <th style="width:110px;padding:8px 6px;text-align:right">Unit price</th>
+        <th style="width:120px;padding:8px 6px;text-align:right">Line total</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      ${discActive()?`<tr style="background:var(--surface-2)">
+        <td colspan="3" style="padding:8px 6px;font-size:0.72rem;color:var(--tx-3)">
+          List total (${totalQty} pcs)
+        </td>
+        <td colspan="2" style="text-align:right;padding:8px 6px;font-size:0.78rem;color:var(--tx-3);text-decoration:line-through">
+          ${fmt(grandListTotal)}
+        </td>
+      </tr>`:''}
+      ${discActive() && saving>0?`<tr style="background:var(--surface-2)">
+        <td colspan="3" style="padding:6px 6px;font-size:0.72rem;color:#34A853">
+          You save ${tierBadge(tier)}
+        </td>
+        <td colspan="2" style="text-align:right;padding:6px 6px;font-weight:700;color:#34A853">
+          ${fmt(saving)} (−${savePct.toFixed(1)}%)
+        </td>
+      </tr>`:''}
+      <tr class="bsk-total-row" style="background:var(--surface-3)">
+        <td colspan="3" style="padding:12px 6px">
+          NET TOTAL — ${totalQty} piece${totalQty!==1?'s':''}
+          ${discActive()?`<span style="font-size:0.68rem;font-weight:400;color:var(--tx-3);margin-left:8px">tier applied: </span>${tierBadge(tier)}`:''}
+        </td>
+        <td colspan="2" style="text-align:right;padding:12px 6px;font-size:1rem;color:${tierColor}">
+          ${fmt(grandNetTotal)}
+        </td>
+      </tr>
+    </tfoot>`;
+
+  if(noteEl) noteEl.textContent = `${totalQty} piece${totalQty!==1?'s':''} · Tier: ${tierLabel} · Net total: ${fmt(grandNetTotal)}${saving>0?' · Saving: '+fmt(saving)+' ('+savePct.toFixed(1)+'%)':''}`;
+}
+
+function openBskModal(){
+  renderBskTable();
+  document.getElementById('bskOverlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeBskModal(){
+  document.getElementById('bskOverlay').classList.remove('on');
+  document.body.style.overflow='';
+}
+
+/* ── Export CSV ── */
+function exportBskCSV(){
+  if(!basketItems.length)return;
+  const tier = basketTier();
+  const tierLabel = tier==='t3'?'Q3':tier==='t2'?'Q2':'1 unit';
+  const totalQty = basketTotalQty();
+  const rows=[['SKU','Name','Brand','Category','Qty','List Price','Unit Net Price','Line Net Total','Tier Applied','Disc %']];
+  basketItems.forEach(b=>{
+    const p=allProducts.find(p=>String(p.id)===String(b.id));if(!p)return;
+    const netP  = unitPriceForProduct(p.regular_price);
+    const discP = p.regular_price>0?((1-netP/p.regular_price)*100):0;
+    rows.push([
+      p.sku, p.name, p.brand||'', p.categories,
+      b.qty,
+      p.regular_price.toFixed(2),
+      netP.toFixed(2),
+      (netP*b.qty).toFixed(2),
+      tierLabel,
+      discP.toFixed(2)+'%'
+    ]);
+  });
+  // Totals row
+  const grandNet = basketItems.reduce((s,b)=>{
+    const p=allProducts.find(p=>String(p.id)===String(b.id));
+    return p?s+unitPriceForProduct(p.regular_price)*b.qty:s;
+  },0);
+  rows.push(['','','','',totalQty,'','','TOTAL: '+grandNet.toFixed(2),'','']);
+  const csv=rows.map(r=>r.map(v=>{const s=String(v);return s.includes(',')||s.includes('"')?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv); // BOM for Excel
+  a.download='cooknation_offer_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+/* ── Share URL (basket or fav encoded in hash) ── */
+function encodeShare(type, ids){
+  const data=JSON.stringify({type, ids});
+  return location.href.split('#')[0]+'#share='+btoa(data);
+}
+function shareBskURL(){
+  const ids=basketItems.map(b=>({id:b.id,qty:b.qty}));
+  const url=encodeShare('basket',ids);
+  navigator.clipboard.writeText(url).then(()=>alert('✓ Basket link copied to clipboard!\n\nShare this URL — when opened it will restore the basket automatically.'));
+}
+function shareFavURL(){
+  const ids=favList.map(p=>p.id);
+  const url=encodeShare('fav',ids);
+  navigator.clipboard.writeText(url).then(()=>alert('✓ Saved products link copied to clipboard!'));
+}
+
+/* ── Share via email ── */
+function shareBskMail(){
+  if(!basketItems.length)return;
+  const tier      = basketTier();
+  const tierLabel = tier==='t3'?`Q3 (≥${disc.q3} pcs)`:tier==='t2'?`Q2 (≥${disc.q2} pcs)`:'1 unit';
+  const totalQty  = basketTotalQty();
+  let grandList=0, grandNet=0;
+  let body = 'COOKNATION.ai — Product Offer\n';
+  body += 'Generated: '+new Date().toLocaleDateString()+'\n';
+  body += 'Discount tier applied: '+tierLabel+' ('+totalQty+' pcs total)\n';
+  body += discSummaryText()+'\n';
+  body += '────────────────────────────────────\n\n';
+  basketItems.forEach(b=>{
+    const p=allProducts.find(p=>String(p.id)===String(b.id));if(!p)return;
+    const netP  = unitPriceForProduct(p.regular_price);
+    const lineN = netP*b.qty;
+    const lineL = p.regular_price*b.qty;
+    grandList+=lineL; grandNet+=lineN;
+    const discPct=p.regular_price>0?((1-netP/p.regular_price)*100):0;
+    body+=`${p.sku} — ${p.name}\n`;
+    body+=`  Qty: ${b.qty} pcs × ${fmt(netP)}${discPct>0?' (list: '+fmt(p.regular_price)+', −'+discPct.toFixed(1)+'%)':''} = ${fmt(lineN)}\n`;
+  });
+  const saving=grandList-grandNet;
+  body+='\n────────────────────────────────────\n';
+  if(saving>0) body+=`List total:  ${fmt(grandList)}\nYou save:    ${fmt(saving)} (−${(saving/grandList*100).toFixed(1)}%)\n`;
+  body+=`NET TOTAL:   ${fmt(grandNet)}\n\n`;
+  body+='Restore this basket: '+encodeShare('basket',basketItems.map(b=>({id:b.id,qty:b.qty})));
+  const mailto=`mailto:?subject=${encodeURIComponent('Cooknation.ai — Product Offer')}&body=${encodeURIComponent(body)}`;
+  window.location.href=mailto;
+}
+
+/* ── Print basket ── */
+function printBasket_old(){
+  // kept for reference
+}
+function printBasket(){
+  // Build a printable window with basket contents
+  const tier      = basketTier();
+  const tierLabel = tier==='t3'?`Q3 ≥${disc.q3} pcs`:tier==='t2'?`Q2 ≥${disc.q2} pcs`:'1 unit';
+  const totalQty  = basketTotalQty();
+  let grandList=0, grandNet=0;
+  const rows=basketItems.map(b=>{
+    const p=allProducts.find(p=>String(p.id)===String(b.id));if(!p)return'';
+    const img    = p.imgs[0]||'';
+    const netP   = unitPriceForProduct(p.regular_price);
+    const lineN  = netP*b.qty;
+    const lineL  = p.regular_price*b.qty;
+    const discPct= p.regular_price>0?((1-netP/p.regular_price)*100):0;
+    grandList+=lineL; grandNet+=lineN;
+    return`<tr>
+      <td>${img?`<img src="${img}" style="width:48px;height:48px;object-fit:contain;background:#f5f5f5;border-radius:4px;border:1px solid #eee;">`:'—'}</td>
+      <td><strong>${esc(p.name)}</strong><br><small style="color:#666">${esc(p.sku)}${p.brand?' · '+esc(p.brand):''}</small></td>
+      <td style="text-align:center">${b.qty}</td>
+      <td style="text-align:right">
+        ${discPct>0?`<span style="text-decoration:line-through;color:#999;font-size:11px">${fmt(p.regular_price)}</span><br>`:''}
+        <strong>${fmt(netP)}</strong>
+        ${discPct>0?`<br><small style="color:#2d9248">−${discPct.toFixed(1)}%</small>`:''}
+      </td>
+      <td style="text-align:right"><strong>${fmt(lineN)}</strong></td>
+    </tr>`;
+  }).join('');
+  const saving = grandList-grandNet;
+  const grandTotal = grandNet;
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cooknation.ai — Offer</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;padding:32px;color:#000;font-size:13px;}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #000;}
+    .header h1{font-size:22px;font-weight:900;letter-spacing:2px;}
+    .header .meta{font-size:11px;color:#555;margin-top:4px;}
+    .disc-box{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:10px 14px;margin-bottom:18px;font-size:11px;color:#333;line-height:1.7;}
+    .disc-box strong{color:#000;}
+    table{width:100%;border-collapse:collapse;margin-bottom:4px;}
+    th{background:#222;color:#fff;padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;}
+    th:nth-child(3){text-align:center;}
+    th:nth-child(4),th:nth-child(5){text-align:right;}
+    td{padding:9px 10px;border-bottom:1px solid #eee;vertical-align:middle;}
+    td:nth-child(3){text-align:center;}
+    td:nth-child(4),td:nth-child(5){text-align:right;}
+    .list-total td{background:#fafafa;color:#999;font-size:11px;border-bottom:none;}
+    .saving-row td{background:#f0faf3;color:#2d9248;font-weight:600;border-bottom:none;}
+    .grand-total td{background:#000;color:#fff;font-weight:900;font-size:14px;border-bottom:none;padding:11px 10px;}
+    .footer{margin-top:20px;font-size:10px;color:#999;text-align:center;}
+    @media print{.no-print{display:none!important}}
+  </style></head><body>
+  <div class="header">
+    <div>
+      <h1>COOKNATION.ai</h1>
+      <div class="meta">Product Offer · Date: ${new Date().toLocaleDateString()} · Brand: ${BRAND_NAME}</div>
+      <div class="meta">Discount tier applied: <strong>${tierLabel}</strong> · Total: ${totalQty} piece${totalQty!==1?'s':''}</div>
+    </div>
+    <button class="no-print" onclick="window.print()" style="padding:9px 22px;background:#34A853;color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:13px;font-weight:700;">🖨 Print / Save as PDF</button>
+  </div>
+  <div class="disc-box"><strong>Discount structure:</strong> ${discSummaryText()}</div>
+  <table>
+    <thead><tr><th style="width:52px"></th><th>Product</th><th style="width:60px">Qty</th><th style="width:110px">Unit price</th><th style="width:110px">Line total</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      ${saving>0?`<tr class="list-total"><td colspan="3">List total (before discounts)</td><td colspan="2" style="text-align:right">${fmt(grandList)}</td></tr>
+      <tr class="saving-row"><td colspan="3">✓ Total saving (−${(saving/grandList*100).toFixed(1)}%)</td><td colspan="2" style="text-align:right">−${fmt(saving)}</td></tr>`:''}
+      <tr class="grand-total"><td colspan="3">NET TOTAL · ${totalQty} piece${totalQty!==1?'s':''}</td><td colspan="2" style="text-align:right">${fmt(grandTotal)}</td></tr>
+    </tfoot>
+  </table>
+  <div class="footer">Generated by COOKNATION.ai — cooknation.ai</div>
+  </body></html>`);
+  win.document.close();
+}
+
+/* ── Restore shared state from URL hash ── */
+function restoreFromURL(){
+  try{
+    const hash=location.hash;
+    if(!hash.startsWith('#share='))return;
+    const data=JSON.parse(atob(hash.replace('#share=','')));
+    if(data.type==='basket' && Array.isArray(data.ids)){
+      data.ids.forEach(({id,qty})=>{
+        const existing=getBasketItem(id);
+        if(existing)existing.qty=qty; else basketItems.push({id:String(id),qty});
+      });
+      updateFAB(); doFilter();
+      setTimeout(()=>openBskModal(),800);
+    }
+    if(data.type==='fav' && Array.isArray(data.ids)){
+      data.ids.forEach(id=>{
+        const p=allProducts.find(p=>String(p.id)===String(id));
+        if(p&&!favList.find(f=>f.id===p.id))favList.push(p);
+      });
+      updateFAB(); doFilter();
+      setTimeout(()=>openFavModal(),800);
+    }
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════
+   FAB BAR UPDATE
+═══════════════════════════════════════════════════════ */
+function updateFAB(){
+  const bar=document.getElementById('fabBar');
+  const favSec=document.getElementById('fabFavSection');
+  const bskSec=document.getElementById('fabBskSection');
+  const cmpSec=document.getElementById('fabCmpSection');
+  const div1=document.getElementById('fabDiv1');
+  const div2=document.getElementById('fabDiv2');
+
+  const hasFav=favList.length>0;
+  const hasBsk=basketItems.length>0;
+  const hasCmp=cmpList.length>0;
+  const any=hasFav||hasBsk||hasCmp;
+
+  bar.classList.toggle('on',any);
+  favSec.style.display=hasFav?'flex':'none';
+  bskSec.style.display=hasBsk?'flex':'none';
+  cmpSec.style.display=hasCmp?'flex':'none';
+  div1.style.display=(hasFav&&(hasBsk||hasCmp))?'block':'none';
+  div2.style.display=(hasBsk&&hasCmp)?'block':'none';
+
+  // Update nav compare button
+  const navBtn=document.getElementById('navCmpBtn');
+  const navCnt=document.getElementById('navCmpCount');
+  if(navBtn){ navBtn.style.display=cmpList.length>=2?'inline-flex':'none'; if(navCnt)navCnt.textContent=cmpList.length; }
+  const goBtn=document.getElementById('cmpGoBtn');
+  if(goBtn)goBtn.style.display=cmpList.length>=2?'inline-flex':'none';
+
+  // Fav chips
+  document.getElementById('fabFavChips').innerHTML=favList.slice(0,3).map(p=>`
+    <div class="fab-chip"><span>${esc(p.name.length>22?p.name.slice(0,22)+'…':p.name)}</span>
+    <button class="fab-chip-rm" onclick="toggleFav('${esc(p.id)}')">✕</button></div>`).join('')+
+    (favList.length>3?`<span style="font-size:0.7rem;color:var(--tx-3)">+${favList.length-3} more</span>`:'');
+
+  // Basket chips
+  document.getElementById('fabBskChips').innerHTML=basketItems.slice(0,2).map(b=>{
+    const p=allProducts.find(x=>String(x.id)===String(b.id));
+    return p?`<div class="fab-chip"><span>${esc((p.name.length>18?p.name.slice(0,18)+'…':p.name))} ×${b.qty}</span>
+    <button class="fab-chip-rm" onclick="removeFromBasket('${esc(b.id)}')">✕</button></div>`:'';
+  }).join('')+
+    (basketItems.length>2?`<span style="font-size:0.7rem;color:var(--tx-3)">+${basketItems.length-2} more</span>`:'');
+
+  // Compare chips
+  document.getElementById('cmpThumbs').innerHTML=cmpList.map(p=>`
+    <div class="fab-chip">
+      ${p.imgs[0]?`<img src="${esc(p.imgs[0])}" style="width:20px;height:20px;object-fit:contain;background:#fff;border-radius:3px;" onerror="this.style.display='none'">`:''}<span>${esc(p.name.length>20?p.name.slice(0,20)+'…':p.name)}</span>
+      <button class="fab-chip-rm" onclick="toggleCmp('${esc(p.id)}')">✕</button>
+    </div>`).join('');
+}
+
+/* Keyboard shortcuts */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeProdModal();closeCmpModal();closeLb();closeBskModal();closeFavModal();}
+});
+
+/* Enter = apply discounts */
+// Discount inputs: real-time update via oninput (no manual trigger needed)
+
+/* ─── AUTO-INIT: load Google Sheet on page open ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply brand config to nav
+  const brandEl = document.getElementById('navBrandName');
+  const docsEl  = document.getElementById('navDocsLink');
+  if(brandEl) brandEl.textContent = BRAND_NAME;
+  if(docsEl)  docsEl.href = BRAND_DRIVE_URL;
+  loadFromSheet();
+});
+window.addEventListener('hashchange', restoreFromURL);
+</script>
+</body>
+</html>
